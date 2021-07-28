@@ -1,8 +1,6 @@
 import pygame, sys
 from grid import Grid
 
-BLACK = (0, 0, 0)
-WHITE = (255,255,255)
 WINDOW_HEIGHT = 500
 WINDOW_WIDTH = 500
 GRID_ROWS = 5
