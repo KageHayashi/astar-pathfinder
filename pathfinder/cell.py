@@ -30,8 +30,8 @@ class Cell():
         self.f = 0
         self.g = 0
         self.h = 0
-        self.in_open = 0
-        self.in_close = 0
+        self.in_open = False
+        self.in_close = False
 
     def get_color(self) -> 'None':
         if self.value == 0:
@@ -69,6 +69,7 @@ class Cell():
                            self.cell_size, self.cell_size)
         pygame.draw.rect(self.grid.screen, self.get_color(), rect, 0) # The filled rect
         pygame.draw.rect(self.grid.screen, Color.BLACK, rect, 1) # The border of the rect
+        pygame.display.update()
 
     def display_cell_text(self) -> None:
         '''

@@ -44,6 +44,7 @@ class Grid:
                 cell.display_cell()
                 if self.SHOW_CELL_TEXT:
                     cell.display_cell_text()
+        pygame.display.update()
 
 
     def reset_hover(self):

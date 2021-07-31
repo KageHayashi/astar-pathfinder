@@ -6,4 +6,3 @@ import pygame, colors
 
 def dijkstra(grid: Grid, start: Cell, end: Cell) -> None:
     pass
-        
