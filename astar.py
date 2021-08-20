@@ -4,6 +4,7 @@ import pygame, random
 from pygame.locals import *
  
 pygame.init()
+pygame.display.set_caption('A* Pathfinder')
 
 width, height = 500, 500
 rows, cols = 25,25
@@ -27,7 +28,7 @@ class Cell():
         self.neighbors = []
 
         # Randomize wall generation
-        if random.random() <= .50:
+        if random.random() <= .25:
             self.is_wall = 1
 
     def show(self, color):
@@ -84,68 +85,70 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                while True:
+                    # A-Star
+                    if (open_cells != []):
+                        lowest_f_index = 0
+                        for i in range(len(open_cells)):
+                            if open_cells[i].f < open_cells[lowest_f_index].f:
+                                lowest_f_index = i
+                        
+                        current = open_cells[lowest_f_index]
+                        # print("Current cell: ", current.i, current.j)
 
-    # A-Star
-    if (open_cells != []):
-        lowest_f_index = 0
-        for i in range(len(open_cells)):
-            if open_cells[i].f < open_cells[lowest_f_index].f:
-                lowest_f_index = i
-        
-        current = open_cells[lowest_f_index]
-        # print("Current cell: ", current.i, current.j)
+                        if open_cells[lowest_f_index] == end:
+                            # Find path
+                            path_route = [(cell.i,cell.j) for cell in path]
+                            print("FOUND!")
+                            print("Nodes visited: ", len(path_route))
+                            print("Path: ", path_route)
+                            break
 
-        if open_cells[lowest_f_index] == end:
-            # Find path
-            path_route = [(cell.i,cell.j) for cell in path]
-            print("FOUND!")
-            print("Nodes visited: ", len(path_route))
-            print("Path: ", path_route)
-            break
+                        open_cells.remove(current)
+                        closed_cells.append(current)
+                        # print("Open cells: ", open_cells)
+                        # print("Closed cells: ", closed_cells)
 
-        open_cells.remove(current)
-        closed_cells.append(current)
-        # print("Open cells: ", open_cells)
-        # print("Closed cells: ", closed_cells)
+                        for neighbor in current.neighbors:
+                            # print("Neighbor: ", neighbor.i, neighbor.j)
+                            if neighbor not in closed_cells and not neighbor.is_wall:
+                                tempG = current.g + 1
+                                if neighbor in open_cells:
+                                    if tempG < neighbor.g:
+                                        neighbor.g = tempG
+                                else:
+                                    neighbor.g = tempG
+                                    open_cells.append(neighbor)
+                                
+                                neighbor.h = calculate_manhanttan_heuristics(neighbor, end)
+                                neighbor.f = neighbor.g + neighbor.h
+                                neighbor.parent = current
+                                # print(neighbor.f)
+                    else:
+                        print("NO PATH")
 
-        for neighbor in current.neighbors:
-            # print("Neighbor: ", neighbor.i, neighbor.j)
-            if neighbor not in closed_cells and not neighbor.is_wall:
-                tempG = current.g + 1
-                if neighbor in open_cells:
-                    if tempG < neighbor.g:
-                        neighbor.g = tempG
-                else:
-                    neighbor.g = tempG
-                    open_cells.append(neighbor)
-                
-                neighbor.h = calculate_manhanttan_heuristics(neighbor, end)
-                neighbor.f = neighbor.g + neighbor.h
-                neighbor.parent = current
-                # print(neighbor.f)
-    else:
-        print("NO PATH")
+                    # Draw & Update
+                    for row in grid:
+                        for cell in row:
+                            cell.show((255,255,255))
 
-    # Draw & Update
-    for row in grid:
-        for cell in row:
-            cell.show((255,255,255))
+                    for cell in open_cells:
+                        cell.show((0,255,0))
 
-    for cell in open_cells:
-        cell.show((0,255,0))
+                    for cell in closed_cells:
+                        cell.show((255,0,0))
 
-    for cell in closed_cells:
-        cell.show((255,0,0))
+                    path = []
+                    temp = current
+                    while (temp.parent):
+                        path.append(temp.parent)
+                        temp = temp.parent
+                    path_route = [(cell.i,cell.j) for cell in path]
 
-    path = []
-    temp = current
-    while (temp.parent):
-        path.append(temp.parent)
-        temp = temp.parent
-    path_route = [(cell.i,cell.j) for cell in path]
+                    for cell in path:
+                        cell.show((0,0,255))
 
-    for cell in path:
-        cell.show((0,0,255))
-
-    pygame.display.flip()
-    fpsClock.tick(fps)
+                    pygame.display.flip()
+                    fpsClock.tick(fps)
