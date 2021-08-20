@@ -71,6 +71,8 @@ for row in grid:
 
 start = grid[0][0]
 end = grid[rows-1][cols-1]
+start.is_wall = 0
+end.is_wall = 0
 
 open_cells = [start]
 closed_cells = []
@@ -80,6 +82,18 @@ path = []
 # Game loop
 while True:
     screen.fill((0, 0, 0))
+    for row in grid:
+        for cell in row:
+            cell.show((255,255,255))
+    
+    for cell in open_cells:
+        cell.show((0,255,0))
+
+    for cell in closed_cells:
+        cell.show((255,0,0))
+
+    pygame.display.flip()
+    fpsClock.tick(fps)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
