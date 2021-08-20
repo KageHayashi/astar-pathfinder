@@ -1,17 +1,17 @@
 import sys
- 
-import pygame
+
+import pygame, random
 from pygame.locals import *
  
 pygame.init()
 
 width, height = 500, 500
-rows, cols = 25, 25
+rows, cols = 25,25
 cell_w = width / cols
 cell_h = height / rows
 
 screen = pygame.display.set_mode((width, height))
-fps = 10
+fps = 15
 fpsClock = pygame.time.Clock()
 
 
@@ -22,10 +22,17 @@ class Cell():
         self.f = 0
         self.g = 0
         self.h = 0
+        self.is_wall = 0
         self.parent = None
         self.neighbors = []
 
+        # Randomize wall generation
+        if random.random() <= .50:
+            self.is_wall = 1
+
     def show(self, color):
+        if self.is_wall:
+            color = (0,0,0)
         rect = pygame.Rect(self.i*cell_w, self.j*cell_h, 
                            cell_w, cell_h)
         pygame.draw.rect(screen, color, rect, 0) # The filled rect
@@ -67,6 +74,7 @@ end = grid[rows-1][cols-1]
 open_cells = [start]
 closed_cells = []
 
+path = []
 
 # Game loop
 while True:
@@ -77,7 +85,7 @@ while True:
             pygame.quit()
             sys.exit()
 
-    # Update
+    # A-Star
     if (open_cells != []):
         lowest_f_index = 0
         for i in range(len(open_cells)):
@@ -89,13 +97,8 @@ while True:
 
         if open_cells[lowest_f_index] == end:
             # Find path
-            print("FOUND!")
-            path = []
-            temp = current
-            while (temp.parent):
-                path.append(temp.parent)
-                temp = temp.parent
             path_route = [(cell.i,cell.j) for cell in path]
+            print("FOUND!")
             print("Nodes visited: ", len(path_route))
             print("Path: ", path_route)
             break
@@ -107,7 +110,7 @@ while True:
 
         for neighbor in current.neighbors:
             # print("Neighbor: ", neighbor.i, neighbor.j)
-            if neighbor not in closed_cells:
+            if neighbor not in closed_cells and not neighbor.is_wall:
                 tempG = current.g + 1
                 if neighbor in open_cells:
                     if tempG < neighbor.g:
@@ -123,7 +126,7 @@ while True:
     else:
         print("NO PATH")
 
-    # Draw
+    # Draw & Update
     for row in grid:
         for cell in row:
             cell.show((255,255,255))
@@ -133,6 +136,16 @@ while True:
 
     for cell in closed_cells:
         cell.show((255,0,0))
+
+    path = []
+    temp = current
+    while (temp.parent):
+        path.append(temp.parent)
+        temp = temp.parent
+    path_route = [(cell.i,cell.j) for cell in path]
+
+    for cell in path:
+        cell.show((0,0,255))
 
     pygame.display.flip()
     fpsClock.tick(fps)
