@@ -6,12 +6,12 @@ from pygame.locals import *
 pygame.init()
 
 width, height = 500, 500
-rows, cols = 5, 5
+rows, cols = 25, 25
 cell_w = width / cols
 cell_h = height / rows
 
 screen = pygame.display.set_mode((width, height))
-fps = 1
+fps = 10
 fpsClock = pygame.time.Clock()
 
 
@@ -22,6 +22,7 @@ class Cell():
         self.f = 0
         self.g = 0
         self.h = 0
+        self.parent = None
         self.neighbors = []
 
     def show(self, color):
@@ -61,7 +62,7 @@ for row in grid:
         cell.find_neighbors(grid)
 
 start = grid[0][0]
-end = grid[4][4]
+end = grid[rows-1][cols-1]
 
 open_cells = [start]
 closed_cells = []
@@ -87,7 +88,16 @@ while True:
         # print("Current cell: ", current.i, current.j)
 
         if open_cells[lowest_f_index] == end:
+            # Find path
             print("FOUND!")
+            path = []
+            temp = current
+            while (temp.parent):
+                path.append(temp.parent)
+                temp = temp.parent
+            path_route = [(cell.i,cell.j) for cell in path]
+            print("Nodes visited: ", len(path_route))
+            print("Path: ", path_route)
             break
 
         open_cells.remove(current)
@@ -108,9 +118,10 @@ while True:
                 
                 neighbor.h = calculate_manhanttan_heuristics(neighbor, end)
                 neighbor.f = neighbor.g + neighbor.h
+                neighbor.parent = current
                 # print(neighbor.f)
     else:
-        pass
+        print("NO PATH")
 
     # Draw
     for row in grid:
