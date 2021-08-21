@@ -11,4 +11,4 @@ A visualizer for various pathfinding algorithms.
 - [ ] Add ability to place walls (mouse and 'a' 's' keys), replay same grid (spacebar), reset to new grid ('r' key) 
 - [ ] Implement different heuristics
 - [ ] Extend to other pathfinding algorithms
-        - dijkstra
+- [ ] Add 'heatmap'
