@@ -2,6 +2,7 @@
 A visualizer for various pathfinding algorithms.
 
 ## A*
+The A* Search algorithm is one of the most popular algorithms used in path-finding and graph traversals.
 ![astar](/images/astar.gif)
 
 ## Dijkstra
