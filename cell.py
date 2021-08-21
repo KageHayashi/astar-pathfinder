@@ -1,4 +1,6 @@
 import pygame, random
+
+from typing import List
 from heuristics import calculate_manhanttan_heuristics
 
 class Cell():
@@ -30,9 +32,9 @@ class Cell():
         pygame.draw.rect(screen, color, rect, 0) # The filled rect
         pygame.draw.rect(screen, (0,0,0), rect, 1) # The border of the rect
 
-    def find_neighbors(self, grid):
+    def find_neighbors(self, grid) -> List['Cell']:
         '''
-        Returns a list of all the neighboring cells
+        Finds and returns the neighbors of the cell.
         '''
         #north, south, east, west neighbor locations
         nsew = ((self.i-1, self.j),(self.i+1, self.j),
@@ -51,3 +53,5 @@ class Cell():
                 continue
             else:
                 self.neighbors.append(grid[i_prime][j_prime])
+
+        return self.neighbors

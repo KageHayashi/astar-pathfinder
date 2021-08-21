@@ -8,14 +8,14 @@ pygame.init()
 pygame.display.set_caption('A* Pathfinder')
 
 # Define game parameters
-width, height = 1000,1000
-rows, cols = 100,100
+width, height = 500,500
+rows, cols = 50,50
 cell_w = width / cols
 cell_h = height / rows
 
 # Create screen and lock framerate
 screen = pygame.display.set_mode((width, height))
-fps = 30
+fps = 25
 fpsClock = pygame.time.Clock()
 
 # Create game grid and define start node and end node
@@ -45,11 +45,13 @@ def update_cells(grid, path, open_cells, closed_cells) -> None:
     fpsClock.tick(fps)
     
 def check_kill(event):
+    '''Checks to see if pygame window was closed.'''
     if event.type == pygame.QUIT:
         pygame.quit()
         sys.exit()
 
 def check_play(event):
+    '''Checks to see if space was pressed to play.'''
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE:
             try:
@@ -58,7 +60,6 @@ def check_play(event):
                 raise
 
 def game_loop():
-    # Start game loop
     while True:
         for event in pygame.event.get():
             check_kill(event)

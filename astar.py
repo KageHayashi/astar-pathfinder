@@ -42,8 +42,7 @@ def astar(grid, start, end) -> bool:
 
         # For each neighbor, calculate their f value and append to open set if 
         # not already visited
-        current.find_neighbors(grid)
-        for neighbor in current.neighbors:
+        for neighbor in current.find_neighbors(grid):
             if neighbor not in closed_cells and not neighbor.is_wall:
                 tempG = current.g + 1
 
