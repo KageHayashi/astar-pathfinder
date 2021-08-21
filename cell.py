@@ -20,6 +20,7 @@ class Cell():
         self.is_wall = 0
         self.parent = None
         self.neighbors = []
+        self.maze_neighbors = []
 
         self.cols = cols
         self.rows = rows
@@ -38,7 +39,7 @@ class Cell():
         self.color = CELL_COLOR_STATUS[self.status]
         if self.is_wall:
             self.color = (0,0,0)
-        rect = pygame.Rect(self.i*self.cell_w, self.j*self.cell_h, 
+        rect = pygame.Rect(self.j*self.cell_w, self.i*self.cell_h, 
                            self.cell_w, self.cell_h)
         pygame.draw.rect(screen, self.color, rect, 0) # The filled rect
         pygame.draw.rect(screen, (0,0,0), rect, 1) # The border of the rect
@@ -66,3 +67,28 @@ class Cell():
                 self.neighbors.append(grid[i_prime][j_prime])
 
         return self.neighbors
+
+    def find_maze_neighbors(self, grid) -> List['Cell']:
+        '''
+        Finds and returns the maze neighbors of the cell. Basically, two 
+        cell skip in all directions.
+        '''
+        #north, south, east, west neighbor locations
+        nsew = ((self.i-2, self.j),(self.i+2, self.j),
+                (self.i, self.j+2),(self.i, self.j-2))
+        
+        # north-east, south-east, north-west, south-west neighbor locations
+        neseswnw = ((self.i-2, self.j+2),(self.i+2, self.j+2),
+                    (self.i-2, self.j-2),(self.i+2, self.j-2))
+        
+        all_directions = nsew + neseswnw
+        
+        for i_prime, j_prime in all_directions:
+            # Bounds check
+            if i_prime < 0 or i_prime > self.rows-1 \
+                or j_prime < 0 or j_prime > self.cols-1:
+                continue
+            else:
+                self.maze_neighbors.append(grid[i_prime][j_prime])
+
+        return self.maze_neighbors

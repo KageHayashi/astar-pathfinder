@@ -23,6 +23,65 @@ def new_grid():
     grid = [[Cell(i, j, cols, rows, cell_w, cell_h) for j in range(cols)] for i in range(rows)]
     return grid
 
+def create_maze(grid):
+    '''
+    Creates a maze using the given grid.
+    Uses an iterative randomized depth-first search.'''
+    
+    # Set every cell to wall first
+    for row in grid:
+        for cell in row:
+            cell.is_wall = 1
+
+    open_stack = []
+    visited = []
+
+    # Choose a random cell as the initial cell
+    open_stack.append(grid[int(random.random()*(cols-1))][int(random.random()*(rows-1))])
+
+    counter = 0
+    while (open_stack != []):
+        counter += 1
+        current = open_stack.pop()
+        current.is_wall = 0
+        # print("current:", current.i, current.j)
+
+        randomized_neighbors = current.find_maze_neighbors(grid)
+        random.shuffle(randomized_neighbors)
+
+        for neighbor in randomized_neighbors:
+            if neighbor not in visited:
+                # print("neighbor:", neighbor.i, neighbor.j)
+                delta_i, delta_j = abs(current.i - neighbor.i), abs(current.j - neighbor.j)
+                
+                # Adjust delta location
+                if delta_i == 0 and delta_j > 0:
+                    delta_j -= 1
+                if delta_i == 0 and delta_j < 0:
+                    delta_j += 1
+                if delta_i > 0 and delta_j == 0:
+                    delta_i -= 1
+                if delta_i < 0 and delta_j == 0:
+                    delta_i += 1
+                if delta_i > 0 and delta_j > 0:
+                    delta_j -= 1
+                    delta_i -= 1
+                if delta_i < 0 and delta_j < 0:
+                    delta_j += 1
+                    delta_i += 1
+
+
+                # print("delta:", delta_i, delta_j)
+                open_stack.append(current)
+
+                i, j = current.i + delta_i, current.j + delta_j
+                if i >= 0 and i <= rows-1 and j >= 0 and j <= cols-1:
+                # neighbor.is_wall = 0
+                    grid[i][j].is_wall = 0
+                visited.append(neighbor)
+                open_stack.append(neighbor)
+                break
+
 def show_cells(grid) -> None:
     '''Updates the grid. i.e Coloring cells.'''
     for row in grid:
@@ -40,6 +99,7 @@ def check_kill(event):
 
 def game_loop():
     grid = new_grid()
+    create_maze(grid)
     start = grid[0][0]
     end = grid[cols-1][rows-1]
     start.is_wall = 0
