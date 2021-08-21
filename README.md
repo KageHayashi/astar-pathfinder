@@ -1,6 +1,7 @@
 # Pathfinder
 A visualizer for various pathfinding algorithms.
 
+## A*
 ![astar](/images/astar.gif)
 
 # TO-DO
