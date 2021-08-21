@@ -3,6 +3,13 @@ import pygame, random
 from typing import List
 from heuristics import calculate_manhanttan_heuristics
 
+# Color configs for each different cell type
+CELL_COLOR_STATUS = {'normal': (255,255,255),
+                     'wall'  : (0,0,0),
+                     'open'  : (0,255,0),
+                     'close' : (255,0,0),
+                     'path'  : (0,0,255)}
+
 class Cell():
     def __init__(self, i, j, cols, rows, cell_w, cell_h):
         self.i = i
@@ -19,17 +26,21 @@ class Cell():
         self.cell_w = cell_w
         self.cell_h = cell_h
 
+        self.status = 'normal'
+        self.color = CELL_COLOR_STATUS[self.status]
+
         # Randomize wall generation
-        if random.random() <= .25:
+        if random.random() <= .4:
             self.is_wall = 1
 
-    def show(self, screen, color):
+    def show(self, screen):
         '''Displays the cell'''
+        self.color = CELL_COLOR_STATUS[self.status]
         if self.is_wall:
-            color = (0,0,0)
+            self.color = (0,0,0)
         rect = pygame.Rect(self.i*self.cell_w, self.j*self.cell_h, 
                            self.cell_w, self.cell_h)
-        pygame.draw.rect(screen, color, rect, 0) # The filled rect
+        pygame.draw.rect(screen, self.color, rect, 0) # The filled rect
         pygame.draw.rect(screen, (0,0,0), rect, 1) # The border of the rect
 
     def find_neighbors(self, grid) -> List['Cell']:

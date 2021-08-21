@@ -1,3 +1,4 @@
+from hashlib import new
 import pygame, random, sys
 
 from cell import Cell
@@ -18,52 +19,50 @@ screen = pygame.display.set_mode((width, height))
 fps = 25
 fpsClock = pygame.time.Clock()
 
-# Create game grid and define start node and end node
-grid = [[Cell(i, j, cols, rows, cell_w, cell_h) for j in range(cols)] for i in range(rows)]
-start = grid[0][0]
-end = grid[rows-1][cols-1]
-start.is_wall = 0
-end.is_wall = 0
+def new_grid():
+    grid = [[Cell(i, j, cols, rows, cell_w, cell_h) for j in range(cols)] for i in range(rows)]
+    return grid
 
-
-def update_cells(grid, path, open_cells, closed_cells) -> None:
+def show_cells(grid) -> None:
     '''Updates the grid. i.e Coloring cells.'''
     for row in grid:
         for cell in row:
-            cell.show(screen, (255,255,255))
-
-    for cell in open_cells:
-        cell.show(screen, (0,255,0))
-
-    for cell in closed_cells:
-        cell.show(screen, (255,0,0))
-
-    for cell in path:
-        cell.show(screen, (0,0,255))
+            cell.show(screen)
 
     pygame.display.flip()
     fpsClock.tick(fps)
-    
+
 def check_kill(event):
     '''Checks to see if pygame window was closed.'''
     if event.type == pygame.QUIT:
         pygame.quit()
         sys.exit()
 
-def check_play(event):
-    '''Checks to see if space was pressed to play.'''
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_SPACE:
-            try:
-                astar(grid, start, end)
-            except Exception as e:
-                raise
-
 def game_loop():
+    grid = new_grid()
+    start = grid[0][0]
+    end = grid[cols-1][rows-1]
+    start.is_wall = 0
+    end.is_wall = 0
+    
+    show_cells(grid)
+    
     while True:
         for event in pygame.event.get():
             check_kill(event)
-            check_play(event)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    try:
+                        astar(grid, start, end)
+                    except Exception as e:
+                        raise
+                if event.key == pygame.K_r:
+                    grid = new_grid()
+                    start = grid[int(random.random()*(cols-1))][int(random.random()*(rows-1))]
+                    end = grid[int(random.random()*(cols-1))][int(random.random()*(rows-1))]
+                    start.is_wall = 0
+                    end.is_wall = 0
+                    show_cells(grid)
 
 if __name__ == "__main__":
     game_loop()

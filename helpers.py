@@ -22,6 +22,7 @@ def update_path(current):
     temp = current
     while (temp.parent):
         path.append(temp.parent)
+        temp.parent.status = 'path'
         temp = temp.parent
 
     return path

@@ -16,6 +16,7 @@ def astar(grid, start, end) -> bool:
     # The set of cells that are open
     # Initially set to only the start node
     open_cells = [start]
+    start.is_open = 1
 
     # The set of cells that are closed
     # Initially empty
@@ -32,7 +33,8 @@ def astar(grid, start, end) -> bool:
         if current == end:
             path = update_path(current)
             path.append(current)
-            play.update_cells(grid, path, open_cells, closed_cells)
+            current.status = 'path'
+            play.show_cells(grid)
             print("FOUND!")
             print(reconstruct_path(path))
             return True
@@ -63,12 +65,18 @@ def astar(grid, start, end) -> bool:
         # Update path taken so far by looping through
         # all parents and adding to path
         path = update_path(current)
-
+        
         # Update the grid and display to screen
-        play.update_cells(grid, path, open_cells, closed_cells)
+        for cell in open_cells:
+            cell.status = 'open'
+        for cell in closed_cells:
+            cell.status = 'close'
+        for cell in path:
+            cell.status = 'path'
+        play.show_cells(grid)
 
         # Check kill. Makes it possible to quit while searching
         for event in pygame.event.get():
             play.check_kill(event)
-
+    print("NO PATH")
     return False
