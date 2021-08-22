@@ -26,7 +26,8 @@ def new_grid():
 def create_maze(grid):
     '''
     Creates a maze using the given grid.
-    Uses an iterative randomized depth-first search.'''
+    Uses an iterative randomized depth-first search.
+    '''
     
     # Set every cell to wall first
     for row in grid:
@@ -82,6 +83,7 @@ def create_maze(grid):
                 break
 
 def place_wall(pos_i, pos_j, grid, start, end):
+    '''Places a wall on the grid at pos_i, pos_j'''
     cell = grid[pos_i][pos_j]
     
     if cell != start and cell != end:
@@ -89,11 +91,18 @@ def place_wall(pos_i, pos_j, grid, start, end):
     show_cells(grid, 0)
 
 def remove_wall(pos_i, pos_j, grid, start, end):
+    '''Removes the wall on the grid at pos_i, pos_j'''
     cell = grid[pos_i][pos_j]
     
     if cell != start and cell != end:
         cell.is_wall = False
     show_cells(grid, 0)
+
+def reset_cells_to_normal(grid):
+    '''Resets all cells to normal'''
+    for row in grid:
+        for cell in row:
+            cell.status = 'normal'
 
 def show_cells(grid, speed) -> None:
     '''Updates the grid. i.e Coloring cells.'''
@@ -111,6 +120,10 @@ def check_kill(event):
         sys.exit()
 
 def game_loop():
+    '''
+    Main game loop. Creates a new grid, create a maze of walls,
+    and start checking game events.
+    '''
     grid = new_grid()
     create_maze(grid)
     start = grid[0][0]
@@ -123,30 +136,37 @@ def game_loop():
     while True:
         for event in pygame.event.get():
             check_kill(event)
-            if pygame.mouse.get_pressed()[0]:
-                pos = pygame.mouse.get_pos()
-                mouse_i = pos[1] // (height // rows)
-                mouse_j = pos[0] // (width // cols)
-                # print(mouse_i, mouse_j)
-                place_wall(mouse_i, mouse_j, grid, start, end)
             
-            if pygame.mouse.get_pressed()[-1]:
+            # Check mouse events
+            mouse_pressed = pygame.mouse.get_pressed()
+            if mouse_pressed:
                 pos = pygame.mouse.get_pos()
                 mouse_i = pos[1] // (height // rows)
                 mouse_j = pos[0] // (width // cols)
-                print(mouse_i, mouse_j)
-                remove_wall(mouse_i, mouse_j, grid, start, end)
 
+                # Left mouse button clicked
+                if mouse_pressed[0]:
+                    place_wall(mouse_i, mouse_j, grid, start, end)
+                # Right mouse button clicked
+                elif mouse_pressed[-1]:
+                    remove_wall(mouse_i, mouse_j, grid, start, end)
+
+            # Check keyboard events
             if event.type == pygame.KEYDOWN:
+                # Starts the game with SPACEBAR
                 if event.key == pygame.K_SPACE:
                     try:
+                        reset_cells_to_normal(grid)
                         astar(grid, start, end)
                     except Exception as e:
                         raise
+                # Restart the game with R
                 if event.key == pygame.K_r:
                     grid = new_grid()
-                    start = grid[int(random.random()*(cols-1))][int(random.random()*(rows-1))]
-                    end = grid[int(random.random()*(cols-1))][int(random.random()*(rows-1))]
+                    #start = grid[int(random.random()*(cols-1))][int(random.random()*(rows-1))]
+                    #end = grid[int(random.random()*(cols-1))][int(random.random()*(rows-1))]
+                    start = grid[0][0]
+                    end = grid[cols-1][rows-1]
                     start.is_wall = 0
                     end.is_wall = 0
                     show_cells(grid, fps)
