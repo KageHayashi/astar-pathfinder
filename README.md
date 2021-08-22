@@ -9,7 +9,8 @@ The A* Search algorithm is one of the most popular algorithms used in path-findi
 We start at the top left corner of the maze and want to get to the bottom right.
 
 #### Cell colors
-- Black cell - wall
+Black cell - wall
+<br>
 Red cell - close (traversed already and not optimal) 
 Green cell - open (considered for traversing later on)
 Blue cell - path (the route taken so-far)
