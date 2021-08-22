@@ -31,10 +31,11 @@ class Cell():
         self.color = CELL_COLOR_STATUS[self.status]
 
         # Randomize wall generation
-        if random.random() <= .4:
-            self.is_wall = 1
+        # if random.random() <= .4:
+        #     self.is_wall = 1
 
     def show(self, screen):
+        from play import fpsClock, fps
         '''Displays the cell'''
         self.color = CELL_COLOR_STATUS[self.status]
         if self.is_wall:
@@ -58,7 +59,8 @@ class Cell():
         
         all_directions = nsew + neseswnw
         
-        for i_prime, j_prime in all_directions:
+        # Use all_directions to traverse diagonally as well
+        for i_prime, j_prime in nsew:
             # Bounds check
             if i_prime < 0 or i_prime > self.rows-1 \
                 or j_prime < 0 or j_prime > self.cols-1:
@@ -83,7 +85,7 @@ class Cell():
         
         all_directions = nsew + neseswnw
         
-        for i_prime, j_prime in all_directions:
+        for i_prime, j_prime in nsew:
             # Bounds check
             if i_prime < 0 or i_prime > self.rows-1 \
                 or j_prime < 0 or j_prime > self.cols-1:

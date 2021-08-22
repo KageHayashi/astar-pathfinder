@@ -1,6 +1,6 @@
 import pygame
 
-from os import close
+from os import close, fspath
 from typing import List
 from cell import Cell
 from helpers import find_lowest_f, reconstruct_path, update_path
@@ -34,10 +34,14 @@ def astar(grid, start, end) -> bool:
             path = update_path(current)
             path.append(current)
             current.status = 'path'
-            play.show_cells(grid)
+            for cell in path:
+                cell.status = 'path'
+            play.show_cells(grid, play.fps)
             print("FOUND!")
             print(reconstruct_path(path))
             return True
+
+        path = update_path(current)
 
         open_cells.remove(current)
         closed_cells.append(current)
@@ -64,19 +68,19 @@ def astar(grid, start, end) -> bool:
 
         # Update path taken so far by looping through
         # all parents and adding to path
-        path = update_path(current)
         
-        # Update the grid and display to screen
         for cell in open_cells:
             cell.status = 'open'
         for cell in closed_cells:
             cell.status = 'close'
         for cell in path:
             cell.status = 'path'
-        play.show_cells(grid)
+        
+        play.show_cells(grid, play.fps)
 
         # Check kill. Makes it possible to quit while searching
         for event in pygame.event.get():
             play.check_kill(event)
+
     print("NO PATH")
     return False

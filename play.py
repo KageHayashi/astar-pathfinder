@@ -10,13 +10,13 @@ pygame.display.set_caption('A* Pathfinder')
 
 # Define game parameters
 width, height = 500,500
-rows, cols = 50,50
+rows, cols = 25,25
 cell_w = width / cols
 cell_h = height / rows
 
 # Create screen and lock framerate
 screen = pygame.display.set_mode((width, height))
-fps = 25
+fps = 60
 fpsClock = pygame.time.Clock()
 
 def new_grid():
@@ -70,7 +70,6 @@ def create_maze(grid):
                     delta_j += 1
                     delta_i += 1
 
-
                 # print("delta:", delta_i, delta_j)
                 open_stack.append(current)
 
@@ -82,14 +81,28 @@ def create_maze(grid):
                 open_stack.append(neighbor)
                 break
 
-def show_cells(grid) -> None:
+def place_wall(pos_i, pos_j, grid, start, end):
+    cell = grid[pos_i][pos_j]
+    
+    if cell != start and cell != end:
+        cell.is_wall = True
+    show_cells(grid, 0)
+
+def remove_wall(pos_i, pos_j, grid, start, end):
+    cell = grid[pos_i][pos_j]
+    
+    if cell != start and cell != end:
+        cell.is_wall = False
+    show_cells(grid, 0)
+
+def show_cells(grid, speed) -> None:
     '''Updates the grid. i.e Coloring cells.'''
     for row in grid:
         for cell in row:
             cell.show(screen)
 
-    pygame.display.flip()
-    fpsClock.tick(fps)
+    pygame.display.update()
+    fpsClock.tick(speed)
 
 def check_kill(event):
     '''Checks to see if pygame window was closed.'''
@@ -105,11 +118,25 @@ def game_loop():
     start.is_wall = 0
     end.is_wall = 0
     
-    show_cells(grid)
+    show_cells(grid, fps)
     
     while True:
         for event in pygame.event.get():
             check_kill(event)
+            if pygame.mouse.get_pressed()[0]:
+                pos = pygame.mouse.get_pos()
+                mouse_i = pos[1] // (height // rows)
+                mouse_j = pos[0] // (width // cols)
+                # print(mouse_i, mouse_j)
+                place_wall(mouse_i, mouse_j, grid, start, end)
+            
+            if pygame.mouse.get_pressed()[-1]:
+                pos = pygame.mouse.get_pos()
+                mouse_i = pos[1] // (height // rows)
+                mouse_j = pos[0] // (width // cols)
+                print(mouse_i, mouse_j)
+                remove_wall(mouse_i, mouse_j, grid, start, end)
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     try:
@@ -122,7 +149,7 @@ def game_loop():
                     end = grid[int(random.random()*(cols-1))][int(random.random()*(rows-1))]
                     start.is_wall = 0
                     end.is_wall = 0
-                    show_cells(grid)
+                    show_cells(grid, fps)
 
 if __name__ == "__main__":
     game_loop()
