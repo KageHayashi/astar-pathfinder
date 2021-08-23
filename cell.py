@@ -80,6 +80,10 @@ class Cell():
         '''
         Finds and returns the maze neighbors of the cell. Basically, two 
         cell skip in all directions.
+        
+        Note: Should probably integrate find_neighbor functions into one
+        function that takes a parameter that determines how many cells in 
+        each direction to search.
         '''
         #north, south, east, west neighbor locations
         nsew = ((self.i-2, self.j),(self.i+2, self.j),

@@ -10,14 +10,20 @@ We start at the top left corner of the maze and want to get to the bottom right.
 
 #### Cell colors
 Black cell - wall
-Red cell - close (traversed already and not optimal) 
+<br>
+Red cell - close (traversed already and not optimal)
+<br>
 Green cell - open (considered for traversing later on)
+<br>
 Blue cell - path (the route taken so-far)
 
 #### Mouse and key interactions
 spacebar - starts the search
+<br>
 r - resets the grid
+<br>
 left mouse - place wall
+<br>
 right mouse - remove wall
 
 ![astar](/images/astar.gif)
