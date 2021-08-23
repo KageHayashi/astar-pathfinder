@@ -8,7 +8,7 @@ from helpers import find_lowest_dist, find_lowest_f, reconstruct_path, update_pa
 from heuristics import calculate_manhanttan_heuristics
 
 
-def dikstra(grid, start, end) -> bool:
+def dijkstra(grid, start, end) -> bool:
     import play
     # Set q is the queue for cells and set p is to keep track 
     # of all cells taken already in order to colorize them.

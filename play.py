@@ -1,4 +1,4 @@
-from dijkstra import dikstra
+from dijkstra import dijkstra
 from hashlib import new
 import pygame, random, sys
 
@@ -158,7 +158,7 @@ def game_loop():
                 if event.key == pygame.K_SPACE:
                     try:
                         reset_cells_to_normal(grid)
-                        astar(grid, start, end)
+                        dijkstra(grid, start, end)
                     except Exception as e:
                         raise
                 # Restart the game with R
