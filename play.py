@@ -1,3 +1,4 @@
+from dijkstra import dikstra
 from hashlib import new
 import pygame, random, sys
 
@@ -16,7 +17,7 @@ cell_h = height / rows
 
 # Create screen and lock framerate
 screen = pygame.display.set_mode((width, height))
-fps = 60
+fps = 30
 fpsClock = pygame.time.Clock()
 
 def new_grid():

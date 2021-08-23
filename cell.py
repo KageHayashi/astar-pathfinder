@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, random, math
 
 from typing import List
 from heuristics import calculate_manhanttan_heuristics
@@ -12,23 +12,29 @@ CELL_COLOR_STATUS = {'normal': (255,255,255),
 
 class Cell():
     def __init__(self, i, j, cols, rows, cell_w, cell_h):
+        # Basic cell info
         self.i = i
         self.j = j
-        self.f = 0
-        self.g = 0
-        self.h = 0
         self.is_wall = 0
         self.parent = None
         self.neighbors = []
         self.maze_neighbors = []
+        self.status = 'normal'
+        self.color = CELL_COLOR_STATUS[self.status]
 
+        # Game info
         self.cols = cols
         self.rows = rows
         self.cell_w = cell_w
         self.cell_h = cell_h
 
-        self.status = 'normal'
-        self.color = CELL_COLOR_STATUS[self.status]
+        # Values for A*
+        self.f = 0
+        self.g = 0
+        self.h = 0
+
+        # Values for Dijkstra
+        self.dist = math.inf
 
         # Randomize wall generation
         # if random.random() <= .4:

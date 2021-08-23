@@ -13,6 +13,19 @@ def find_lowest_f(open_cells):
     
     return lowest_f
 
+# Could probably merge this with find_lowest_f into one function
+def find_lowest_dist(cells):
+    '''
+    Given a set of cells, finds and returns the
+    cell with the lowest dist value.
+    '''
+    lowest_dist = cells[0]
+    for c in cells:
+        if c.dist < lowest_dist.dist:
+            lowest_dist = c
+    
+    return lowest_dist
+
 def update_path(current):
     '''
     Given the current cell, find the path we took to 
